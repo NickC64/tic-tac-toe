@@ -71,12 +71,15 @@ function App() {
   
   function handleSelectSquare(rowIndex, colIndex) {
 
+    if (gameBoard[rowIndex][colIndex] || winner || hasDraw) {
+      return;
+    }
 
     setGameTurns((prevTurns) => {
       let currentPlayer = deriveActivePlayer(prevTurns);
 
       const updatedTurns = [ {square:{ row: rowIndex, col: colIndex }, player: currentPlayer}, ...prevTurns ];
-      
+
       return updatedTurns;
     });
 
