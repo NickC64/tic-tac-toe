@@ -55,7 +55,7 @@ function deriveGameBoard(gameTurns) {
   return gameBoard;
 }
 
-function App() {
+function Game() {
  
   const [players, setPlayers] = useState(PLAYERS);
   
@@ -78,9 +78,8 @@ function App() {
     setGameTurns((prevTurns) => {
       let currentPlayer = deriveActivePlayer(prevTurns);
 
-      const updatedTurns = [ {square:{ row: rowIndex, col: colIndex }, player: currentPlayer}, ...prevTurns ];
 
-      return updatedTurns;
+      return [ {square:{ row: rowIndex, col: colIndex }, player: currentPlayer}, ...prevTurns ];
     });
 
   }
@@ -109,4 +108,4 @@ function App() {
   )
 }
 
-export default App
+export default Game
