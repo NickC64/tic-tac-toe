@@ -1,0 +1,340 @@
+@use "../../theme.scss";
+
+
+@import "https://fonts.googleapis.com/css2?family=Caprasimo&family=Roboto+Slab:wght@400;700&display=swap";
+
+@keyframes slide-in-from-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-text {
+  0% {
+    color: var(--text-muted);
+  }
+  50% {
+    color: var(--highlight);
+  }
+  100% {
+    color: var(--text-muted);
+  }
+}
+
+@keyframes pulse-text-size {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 var(--highlight);
+  }
+  50% {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.5rem var(--highlight);
+  }
+  100% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 var(--highlight);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Roboto Slab', sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: radial-gradient(circle at top, var(--warning), var(--primary)) repeat;
+  background-size: 100% 100%, 30% 30%, 100% 100%;
+  min-height: 110rem;
+}
+
+header {
+  text-align: center;
+  img {
+    width: 8rem;
+    object-fit: contain;
+    margin: 3rem auto 1rem auto;
+    filter: drop-shadow(0 0 8px var(--bg-dark));
+  }
+}
+
+h1 {
+  font-family: 'Caprasimo', cursive;
+  font-size: 3rem;
+  margin: 0 auto 3rem auto;
+  color: var(--bg-dark);
+}
+
+#game-container {
+  max-width: 45rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 6px;
+  background: linear-gradient(var(--bg-dark), var(--bg));
+  box-shadow: 0 0 20px black;
+  position: relative;
+}
+
+#players {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    border: 2px solid transparent;
+  }
+
+  button {
+    width: 3rem;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+    text-align: center;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+}
+
+#players.highlight-player {
+  li.active {
+    border-color: var(--border);
+    animation: pulse 2s infinite ease-in-out;
+  }
+}
+
+.player {
+  border: 2px solid transparent;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+
+  input {
+    font: inherit;
+    font-size: 1rem;
+    width: 10rem;
+    border: none;
+    padding: 0.5rem;
+    animation: pulse-text 2s infinite;
+    background-color: var(--bg-dark);
+    text-align: center;
+    text-transform: uppercase;
+  }
+}
+
+.player-name {
+  display: inline-block;
+  width: 10rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0.5rem;
+  border-radius: 4px;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.player-symbol {
+  margin-left: 1rem;
+  font-size: 1rem;
+}
+
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#pre-game {
+  text-align: center;
+
+  button {
+    cursor: pointer;
+    background: none;
+    color: var(--primary);
+    border: none;
+    font-family: 'Caprasimo', cursive;
+    font-size: 4rem;
+    text-shadow: 0 0 12px var(--bg-dark);
+    animation: pulse-text-size 2s infinite ease-out;
+  }
+}
+
+#game-board {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin: 3rem 0;
+  padding: 0;
+  flex-direction: column;
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  button {
+    width: 8rem;
+    height: 8rem;
+    border: none;
+    background: var(--bg-light);
+    color: var(--text);
+    font-size: 5rem;
+    cursor: pointer;
+    font-family: 'Caprasimo', cursive;
+    padding: 1rem;
+  }
+}
+
+#game-over {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg);
+  animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.65, 0.52) forwards;
+
+  h2 {
+    font-family: 'Caprasimo', cursive;
+    font-size: 4rem;
+    text-align: center;
+    color: var(--primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  button {
+    display: block;
+    margin: 0 auto;
+    font-size: 1.5rem;
+    background: none;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s, color 0.2s;
+    box-shadow: 0 0 8px var(--primary);
+
+    &:hover {
+      background: var(--primary);
+      color: var(--bg-dark);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px var(--primary);
+    }
+  }
+}
+
+#log {
+  max-width: 20rem;
+  color: var(--bg-dark);
+  list-style: none;
+  margin: 2rem auto;
+  padding: 0;
+  text-align: center;
+
+  li {
+    border-radius: 4px;
+    animation: slide-in-from-left 1s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+    margin: 0.75rem;
+  }
+
+  li.highlighted {
+    background-color: var(--bg-dark);
+    color: var(--text);
+  }
+}
+
+#game-hints {
+  text-align: center;
+  color: var(--text-muted);
+
+  h2 {
+    font-family: 'Caprasimo', cursive;
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    margin-top: 1.5rem;
+  }
+}

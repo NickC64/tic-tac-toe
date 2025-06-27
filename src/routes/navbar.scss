@@ -1,0 +1,58 @@
+@use "../theme";
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--bg-dark);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid var(--border-muted);
+
+  .navbar-title {
+    font-family: 'Caprasimo', cursive;
+    font-size: 2rem;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+
+    li {
+      a {
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 1rem;
+        transition: color 0.3s;
+
+        &:hover {
+          color: var(--primary);
+        }
+      }
+
+      button {
+        border: none;
+        background: var(--primary);
+        color: var(--bg-dark);
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+
+        &:hover {
+          background-color: var(--highlight);
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+}

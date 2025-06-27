@@ -1,0 +1,35 @@
+:root {
+  /* Dark Theme Colors */
+  --bg-dark: oklch(0.1 0.045 220);
+  --bg: oklch(0.15 0.045 220);
+  --bg-light: oklch(0.2 0.045 220);
+  --text: oklch(0.96 0.09 220);
+  --text-muted: oklch(0.76 0.09 220);
+  --highlight: oklch(0.5 0.09 220);
+  --border: oklch(0.4 0.09 220);
+  --border-muted: oklch(0.3 0.09 220);
+  --primary: oklch(0.76 0.1 220);
+  --secondary: oklch(0.76 0.1 40);
+  --danger: oklch(0.7 0.09 30);
+  --warning: oklch(0.7 0.09 100);
+  --success: oklch(0.7 0.09 160);
+  --info: oklch(0.7 0.09 260);
+}
+
+html.light-theme {
+  /* Light Theme Colors */
+  --bg-dark: oklch(0.92 0.045 220);
+  --bg: oklch(0.96 0.045 220);
+  --bg-light: oklch(1 0.045 220);
+  --text: oklch(0.15 0.09 220);
+  --text-muted: oklch(0.4 0.09 220);
+  --highlight: oklch(1 0.09 220);
+  --border: oklch(0.6 0.09 220);
+  --border-muted: oklch(0.7 0.09 220);
+  --primary: oklch(0.4 0.1 220);
+  --secondary: oklch(0.4 0.1 40);
+  --danger: oklch(0.5 0.09 30);
+  --warning: oklch(0.5 0.09 100);
+  --success: oklch(0.5 0.09 160);
+  --info: oklch(0.5 0.09 260);
+}
