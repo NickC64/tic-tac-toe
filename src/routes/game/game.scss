@@ -1,8 +1,5 @@
 @use "../../theme.scss";
 
-
-@import "https://fonts.googleapis.com/css2?family=Caprasimo&family=Roboto+Slab:wght@400;700&display=swap";
-
 @keyframes slide-in-from-left {
   0% {
     opacity: 0;
@@ -72,7 +69,7 @@
 }
 
 html {
-  font-family: 'Roboto Slab', sans-serif;
+  font-family: var(--font-body);
   line-height: 1.5;
   color: var(--text);
   font-synthesis: none;
@@ -99,15 +96,29 @@ header {
 }
 
 h1 {
-  font-family: 'Caprasimo', cursive;
+  font-family: var(--font-heading);
   font-size: 3rem;
   margin: 0 auto 3rem auto;
   color: var(--bg-dark);
 }
 
-#game-container {
-  max-width: 45rem;
+#game-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 90rem;
   margin: 3rem auto;
+  padding: 0 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#game-container {
+  flex: 0 1 auto;
+  max-width: 45rem;
+  min-width: 0;
   padding: 2rem;
   border-radius: 6px;
   background: var(--bg);
@@ -156,6 +167,9 @@ h1 {
 }
 
 .player {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   border: 2px solid transparent;
   padding: 0.5rem;
   border-radius: 4px;
@@ -188,7 +202,6 @@ h1 {
 }
 
 .player-symbol {
-  margin-left: 1rem;
   font-size: 1rem;
 }
 
@@ -206,7 +219,7 @@ ol {
     background: none;
     color: var(--primary);
     border: none;
-    font-family: 'Caprasimo', cursive;
+    font-family: var(--font-heading);
     font-size: 4rem;
     text-shadow: 0 0 12px var(--bg-dark);
     animation: pulse-text-size 2s infinite ease-out;
@@ -239,7 +252,7 @@ ol {
     color: var(--text);
     font-size: 5rem;
     cursor: pointer;
-    font-family: 'Caprasimo', cursive;
+    font-family: var(--font-heading);
     padding: 1rem;
   }
 }
@@ -258,7 +271,7 @@ ol {
   animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.65, 0.52) forwards;
 
   h2 {
-    font-family: 'Caprasimo', cursive;
+    font-family: var(--font-heading);
     font-size: 4rem;
     text-align: center;
     color: var(--primary);
@@ -293,18 +306,84 @@ ol {
   }
 }
 
-#log {
+.move-log-pane {
+  flex: 0 0 20rem;
   max-width: 20rem;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: 6px;
+  background: var(--bg);
+  box-shadow: 0 4px 4px #00000030, 0 12px 12px #00000015;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 6rem);
+  position: sticky;
+  top: 3rem;
+  
+  // Adjust when space is constrained - flex-wrap will handle the wrapping
+  @media (max-width: 768px) {
+    position: static;
+    max-height: none;
+    width: 100%;
+    max-width: 45rem;
+  }
+}
+
+.move-log-header {
+  font-family: 'Caprasimo', cursive;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  text-align: center;
+}
+
+.move-log-empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2rem 0;
+  margin: 0;
+  font-style: italic;
+}
+
+#log {
   color: var(--text);
   list-style: none;
-  margin: 2rem auto;
+  margin: 0;
   padding: 0;
-  text-align: center;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
 
   li {
+    padding: 0.75rem 1rem;
+    margin: 0;
     border-radius: 4px;
-    animation: slide-in-from-left 1s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
-    margin: 0.75rem;
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+    transition: background-color 0.2s;
+    animation: slide-in-from-left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+
+    &:nth-child(even) {
+      background-color: var(--bg-light);
+    }
+
+    &:nth-child(odd) {
+      background-color: transparent;
+    }
+
+    &:hover {
+      background-color: var(--bg-dark);
+    }
+
+    &.latest-move {
+      background-color: var(--primary);
+      color: var(--bg-dark);
+      font-weight: bold;
+    }
   }
 
   li.highlighted {
@@ -318,7 +397,7 @@ ol {
   color: var(--text-muted);
 
   h2 {
-    font-family: 'Caprasimo', cursive;
+    font-family: var(--font-heading);
     font-size: 2rem;
     margin: 0;
   }
@@ -336,5 +415,32 @@ ol {
     color: var(--text-muted);
     font: inherit;
     margin-top: 1.5rem;
+  }
+}
+
+// Mobile styles
+@media (max-width: 768px) {
+  #game-main {
+    flex-direction: column;
+    padding: 0 1rem;
+    margin: 2rem auto;
+  }
+
+  #game-container {
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .move-log-pane {
+    flex: 1;
+    max-width: 100%;
+    width: 100%;
+    position: static;
+    max-height: none;
+    margin-top: 2rem;
+  }
+
+  #log {
+    max-height: 20rem;
   }
 }

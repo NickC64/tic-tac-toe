@@ -17,7 +17,7 @@ const INITIAL_GAMEBOARD = [[null, null, null], [null, null, null], [null, null, 
 function deriveActivePlayer(gameTurns) {
   let currentPlayer = 'X';
 
-  if (gameTurns.length > 0  && gameTurns[0].player === 'X') {
+  if (gameTurns.length > 0  && gameTurns[gameTurns.length - 1].player === 'X') {
 
     currentPlayer = 'O';
   }
@@ -79,7 +79,7 @@ function Game() {
       let currentPlayer = deriveActivePlayer(prevTurns);
 
 
-      return [ {square:{ row: rowIndex, col: colIndex }, player: currentPlayer}, ...prevTurns ];
+      return [ ...prevTurns, {square:{ row: rowIndex, col: colIndex }, player: currentPlayer} ];
     });
 
   }
@@ -93,7 +93,7 @@ function Game() {
   }
 
   return (
-    <main>
+    <main id="game-main">
       <div id="game-container">
         <ol id="players" className="highlight-player">
           <Player initialName={PLAYERS.X} symbol="X" isActive={activePlayer === 'X'} onChangeName={handlePlayerNameChange}/>
