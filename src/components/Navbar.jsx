@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 import { useState } from "react";
-import "./navbar.scss";
+import "../routes/navbar.scss";
 
 export default function NavBar() {
     const [isLightTheme, setIsLightTheme] = useState(false);
