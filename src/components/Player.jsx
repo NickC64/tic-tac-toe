@@ -1,17 +1,19 @@
 import { useState } from 'react';
 
-export default function Player({initialName, symbol, isActive, onChangeName}) {
+export default function Player({initialName, symbol, isActive, onChangeName, isBot}) {
     const [playerName, setPlayerName] = useState(initialName);
     const [ isEditing, setIsEditing ] = useState(false);
 
     function handleEditClick () {
-
+        // Don't allow editing for bots
+        if (isBot) {
+            return;
+        }
         
         setIsEditing((editing) => !editing);
         if (isEditing) {
             onChangeName(symbol, playerName);
         }
-        
     }
 
     function handleChange(event) {
@@ -23,8 +25,9 @@ export default function Player({initialName, symbol, isActive, onChangeName}) {
             <span className="player">
               {isEditing? <input type="text" required value={playerName} onChange={handleChange} /> : <span className="player-name">{playerName}</span>}
               <span className="player-symbol">{symbol}</span>
+              {isBot && <span className="bot-indicator">🤖</span>}
             </span>
-            <button onClick={handleEditClick}>{isEditing? 'Save' : 'Edit'}</button>
+            {!isBot && <button onClick={handleEditClick}>{isEditing? 'Save' : 'Edit'}</button>}
         </li>
     );
 }

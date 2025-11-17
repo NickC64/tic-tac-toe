@@ -115,10 +115,17 @@ h1 {
   box-sizing: border-box;
 }
 
-#game-container {
+#game-wrapper {
   flex: 0 1 auto;
   max-width: 45rem;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#game-container {
+  width: 100%;
   padding: 2rem;
   border-radius: 6px;
   background: var(--bg);
@@ -257,6 +264,36 @@ ol {
   }
 }
 
+.return-to-current-btn {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  background: var(--primary);
+  color: var(--bg-dark);
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 20px var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: slide-in-from-left 0.4s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+
+  &:hover {
+    background: var(--bg-dark);
+    color: var(--primary);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 30px var(--primary);
+  }
+
+  &:active {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 15px var(--primary);
+  }
+}
+
 #game-over {
   position: absolute;
   top: 0;
@@ -366,6 +403,7 @@ ol {
     font-family: var(--font-mono);
     transition: background-color 0.2s;
     animation: slide-in-from-left 0.3s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+    
 
     &:nth-child(even) {
       background-color: var(--bg-light);
@@ -377,9 +415,10 @@ ol {
 
     &:hover {
       background-color: var(--bg-dark);
+      cursor: pointer;
     }
 
-    &.latest-move {
+    &.selected-move {
       background-color: var(--primary);
       color: var(--bg-dark);
       font-weight: bold;
@@ -426,6 +465,11 @@ ol {
     margin: 2rem auto;
   }
 
+  #game-wrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
   #game-container {
     max-width: 100%;
     margin: 0;
@@ -442,5 +486,132 @@ ol {
 
   #log {
     max-height: 20rem;
+  }
+}
+
+.bot-indicator {
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+}
+
+.bot-thinking-indicator {
+  text-align: center;
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin: 1rem 0;
+  font-style: italic;
+  animation: pulse-text 1.5s infinite;
+}
+
+#home-main {
+  max-width: 60rem;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  text-align: center;
+
+  h1 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+}
+
+#game-setup {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+
+  .player-setup {
+    background: var(--bg);
+    padding: 2rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 4px #00000030, 0 12px 12px #00000015;
+    min-width: 20rem;
+    flex: 1;
+    max-width: 25rem;
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      margin: 0 0 1.5rem 0;
+      color: var(--text);
+    }
+
+    .setup-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+
+      label {
+        font-weight: bold;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      input, select {
+        font: inherit;
+        font-size: 1rem;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 4px;
+        background: var(--bg-light);
+        color: var(--text);
+        transition: border-color 0.2s;
+
+        &:focus {
+          outline: none;
+          border-color: var(--primary);
+        }
+      }
+    }
+  }
+}
+
+.start-game-btn {
+  margin-top: 2rem;
+  padding: 1rem 3rem;
+  font-size: 1.5rem;
+  font-family: var(--font-heading);
+  font-weight: bold;
+  background: var(--primary);
+  color: var(--bg-dark);
+  border: 2px solid var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 20px var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &:hover {
+    background: var(--bg-dark);
+    color: var(--primary);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 30px var(--primary);
+  }
+
+  &:active {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  #game-setup {
+    flex-direction: column;
+
+    .player-setup {
+      max-width: 100%;
+    }
   }
 }
