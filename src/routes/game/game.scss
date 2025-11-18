@@ -495,12 +495,21 @@ ol {
 }
 
 .bot-thinking-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
   color: var(--primary);
   font-size: 1.2rem;
-  margin: 1rem 0;
   font-style: italic;
   animation: pulse-text 1.5s infinite;
+  z-index: 5;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
 }
 
 #home-main {
