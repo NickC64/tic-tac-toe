@@ -30,7 +30,7 @@ const STRATEGY_MAP = {
   easy: easyStrategy
 };
 
-function Game() {
+export default function Game() {
   const [searchParams] = useSearchParams();
   
   // Initialize player configs from URL params or defaults
@@ -223,4 +223,3 @@ function Game() {
   )
 }
 
-export default Game
