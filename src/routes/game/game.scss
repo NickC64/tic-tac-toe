@@ -462,64 +462,7 @@ ol {
   }
 }
 
-// Mobile styles
-@media (max-width: 768px) {
-  #game-main {
-    flex-direction: column;
-    padding: 0 1rem;
-    margin: 2rem auto;
-  }
 
-  #game-wrapper {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  #game-container {
-    max-width: 100%;
-    margin: 0;
-  }
-
-  .move-log-pane {
-    flex: 1;
-    max-width: 100%;
-    width: 100%;
-    position: static;
-    max-height: none;
-    margin-top: 2rem;
-  }
-
-  #log {
-    max-height: 20rem;
-  }
-
-  #game-board {
-    width: min(340px, 100%);
-    gap: 0.75rem;
-
-    button {
-      width: 100%;
-      font-size: 3rem;
-    }
-  }
-
-  #players {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex-direction: row;
-      gap: 0.5rem;
-      min-width: 140px;
-      flex: 1 1 120px;
-    }
-
-    button {
-      align-self: center;
-    }
-  }
-}
 
 .bot-indicator {
   font-size: 1.2rem;
@@ -644,15 +587,5 @@ ol {
 
   &:active {
     transform: translateY(0) scale(1);
-  }
-}
-
-@media (max-width: 768px) {
-  #game-setup {
-    flex-direction: column;
-
-    .player-setup {
-      max-width: 100%;
-    }
   }
 }
