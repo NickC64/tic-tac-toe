@@ -12,7 +12,7 @@ export default function NavBar() {
 
     return (
         <nav className="navbar">
-            <h1 className="navbar-title">Tic Tac Toe</h1>
+            <h1 className="navbar-title"><a className="navbar-title-link" href="/">Tic Tac Toe</a></h1>
             <ul className="navbar-links">
                 <li>
                     <NavLink to={"/"} end>Home</NavLink>

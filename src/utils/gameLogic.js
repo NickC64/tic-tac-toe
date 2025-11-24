@@ -58,10 +58,11 @@ export function deriveActivePlayer(gameTurns, moveIndex) {
  * Derives the winner from the game board
  * @param {Array} gameBoard - 3x3 game board array
  * @param {Object} players - Object mapping symbols to player names/configs
- * @returns {string|undefined} Winner name or undefined
+ * @returns {Object|undefined} {winner: string, combination: Array} or undefined
  */
 export function deriveWinner(gameBoard, players) {
   let winner;
+  let winningCombination;
 
   for (const combination of WINNING_COMBINATIONS) {
     const [firstSquareSymbol, secondSquareSymbol, thirdSquareSymbol] = combination.map(
@@ -76,9 +77,15 @@ export function deriveWinner(gameBoard, players) {
       // Handle both old format (string) and new format (object with name property)
       const winnerConfig = players[firstSquareSymbol];
       winner = typeof winnerConfig === 'string' ? winnerConfig : winnerConfig?.name;
+      winningCombination = combination;
+      break;
     }
   }
-  return winner;
+  
+  if (winner) {
+    return { winner, combination: winningCombination };
+  }
+  return undefined;
 }
 
 /**

@@ -67,11 +67,28 @@ export default function Game() {
   const [gameTurns, setGameTurns] = useState([]);
   const [currentMoveIndex, setCurrentMoveIndex] = useState(null);
   const [isBotThinking, setIsBotThinking] = useState(false);
+  const [showGameOver, setShowGameOver] = useState(false);
 
   const gameBoard = deriveGameBoard(gameTurns, currentMoveIndex);
   const activePlayer = deriveActivePlayer(gameTurns, currentMoveIndex);
-  const winner = deriveWinner(gameBoard, playerConfigs);
+  const winnerResult = deriveWinner(gameBoard, playerConfigs);
+  const winner = winnerResult?.winner;
+  const winningCombination = winnerResult?.combination;
   const hasDraw = isDraw(gameTurns, winner);
+
+  // Delay showing game over screen to let winning line draw
+  useEffect(() => {
+    if ((winner || hasDraw) && currentMoveIndex === null) {
+      // Wait 1.5 seconds before showing game over
+      const timer = setTimeout(() => {
+        setShowGameOver(true);
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    } else {
+      setShowGameOver(false);
+    }
+  }, [winner, hasDraw, currentMoveIndex]);
 
   // Unified move handler
   function handleMove(square) {
@@ -153,6 +170,7 @@ export default function Game() {
     setGameTurns([]);
     setCurrentMoveIndex(null);
     setIsBotThinking(false);
+    setShowGameOver(false);
   }
 
   function handlePlayerNameChange(symbol, newName) {
@@ -199,7 +217,7 @@ export default function Game() {
             />
           </ol>
           {false}
-          {(winner || hasDraw) && currentMoveIndex === null && <GameOver winner={winner} onRestart={handleRestart}/>}
+          {showGameOver && <GameOver winner={winner} onRestart={handleRestart}/>}
           {isBotThinking && (
             <div className="bot-thinking-indicator">
               {playerConfigs[activePlayer]?.name} is thinking...
@@ -210,6 +228,7 @@ export default function Game() {
             board={gameBoard} 
             isViewingPast={isViewingPast}
             isDisabled={isBoardDisabled}
+            winningCombination={winningCombination}
           />
         </div>
         {currentMoveIndex !== null && (

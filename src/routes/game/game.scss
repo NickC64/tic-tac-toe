@@ -64,6 +64,36 @@
   }
 }
 
+@keyframes bounce-win {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-20%) scale(1.1);
+  }
+  50% {
+    transform: translateY(0) scale(1);
+  }
+  75% {
+    transform: translateY(-10%) scale(1.05);
+  }
+}
+
+@keyframes draw-line {
+  0% {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -100,6 +130,11 @@ h1 {
   font-size: 3rem;
   margin: 0 auto 3rem auto;
   color: var(--bg-dark);
+}
+
+.navbar-title-link {
+  text-decoration: none;
+  color: var(--text);
 }
 
 #game-main {
@@ -243,9 +278,10 @@ ol {
   display: grid;
   grid-template-columns: repeat(3, minmax(3.5rem, 1fr));
   gap: clamp(0.75rem, 2vw, 1rem);
-  margin: 3rem auto;
+  margin: 0;
   padding: 0;
-  width: min(360px, 100%);
+  width: 100%;
+  position: relative;
 
   li {
     list-style: none;
@@ -266,6 +302,19 @@ ol {
     align-items: center;
     justify-content: center;
     transition: transform 0.2s, background 0.2s;
+
+    &.winning-square {
+      animation: bounce-win 0.8s ease-out;
+    }
+  }
+}
+
+.winning-line {
+  line {
+    filter: drop-shadow(0 0 4px var(--primary));
+    animation: draw-line 1.5s ease-out 0.8s forwards;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
   }
 }
 
@@ -311,6 +360,7 @@ ol {
   align-items: center;
   background-color: var(--bg);
   animation: pop-in 0.5s cubic-bezier(0.68, -0.55, 0.65, 0.52) forwards;
+  z-index: 100;
 
   h2 {
     font-family: var(--font-heading);
