@@ -34,40 +34,7 @@ export function minimaxStrategy(gameBoard, playerSymbol) {
   
   const opponent = playerSymbol === 'X' ? 'O' : 'X';
   
-  // Try to find a winning move
-  for (const move of availableMoves) {
-    const testBoard = gameBoard.map(row => [...row]);
-    testBoard[move.row][move.col] = playerSymbol;
-    if (hasWon(testBoard, playerSymbol)) {
-      return move;
-    }
-  }
-  
-  // Try to block opponent's winning move
-  for (const move of availableMoves) {
-    const testBoard = gameBoard.map(row => [...row]);
-    testBoard[move.row][move.col] = opponent;
-    if (hasWon(testBoard, opponent)) {
-      return move;
-    }
-  }
-  
-  // Prefer center
-  if (gameBoard[1][1] === null) {
-    return { row: 1, col: 1 };
-  }
-  
-  // Prefer corners
-  const corners = [
-    { row: 0, col: 0 },
-    { row: 0, col: 2 },
-    { row: 2, col: 0 },
-    { row: 2, col: 2 }
-  ];
-  const availableCorners = corners.filter(corner => gameBoard[corner.row][corner.col] === null);
-  if (availableCorners.length > 0) {
-    return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-  }
+
   
   // Use minimax algorithm for remaining moves
   let bestMove = null;
