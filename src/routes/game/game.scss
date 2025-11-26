@@ -290,7 +290,7 @@ ol {
   button {
     width: 100%;
     aspect-ratio: 1;
-    border: none;
+    border: 2px solid var(--border-muted);
     background: var(--bg-light);
     color: var(--text);
     font-size: 4.5rem;
@@ -301,13 +301,26 @@ ol {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s, background 0.2s;
+    transition: transform 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover:not(:disabled) {
+      border-color: var(--border);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      cursor: default;
+    }
 
     &.winning-square {
       animation: bounce-win 0.8s ease-out;
     }
   }
 }
+
+
 
 .winning-line {
   line {
