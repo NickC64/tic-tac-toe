@@ -1,5 +1,5 @@
 
-export default function GameBoard( {onSelectSquare, board, isViewingPast, isDisabled, winningCombination} ) {
+export default function GameBoard( {onSelectSquare, board, isViewingPast, isDisabled, winningCombination, hasDraw} ) {
     // Calculate line coordinates for winning combination
     const getLineCoordinates = () => {
         if (!winningCombination || winningCombination.length !== 3) {
@@ -56,7 +56,7 @@ export default function GameBoard( {onSelectSquare, board, isViewingPast, isDisa
                                     onClick={() => onSelectSquare(rowIndex, colIndex)}
                                     disabled={playerSymbol !== null || isViewingPast || isDisabled}
                                     style={{ cursor: (isViewingPast || isDisabled) ? 'default' : playerSymbol !== null ? 'default' : 'pointer' }}
-                                    className={isWinner ? 'winning-square' : ''}
+                                    className={`${isWinner ? 'winning-square' : ''} ${hasDraw ? 'draw-shake' : ''}`}
                                 >
                                     {playerSymbol}
                                 </button>

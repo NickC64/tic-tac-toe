@@ -229,6 +229,7 @@ export default function Game() {
             isViewingPast={isViewingPast}
             isDisabled={isBoardDisabled}
             winningCombination={winningCombination}
+            hasDraw={hasDraw}
           />
         </div>
         {currentMoveIndex !== null && (
