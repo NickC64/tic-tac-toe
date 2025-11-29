@@ -1,17 +1,12 @@
 import { NavLink } from "react-router";
-import { useState, useEffect } from "react";
 import "../routes/navbar.scss";
 import { useGameConfig } from '../core/GameConfig.jsx';
 
 export default function NavBar() {
-    const { theme, toggleTheme, getIsLightMode } = useGameConfig();
-    const [isLightTheme, setIsLightTheme] = useState(false);
-
-    useEffect(() => {
-        // Get current light mode state, with fallback for backward compatibility
-        const isLight = getIsLightMode ? getIsLightMode() : theme === 'light';
-        setIsLightTheme(isLight);
-    }, [theme, getIsLightMode]);
+    const { theme, toggleTheme, isLightMode } = useGameConfig();
+    
+    // Use isLightMode from GameConfig, with fallback for backward compatibility
+    const isLightTheme = isLightMode !== undefined ? isLightMode : theme === 'light';
 
     const handleThemeToggle = () => {
         toggleTheme();

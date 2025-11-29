@@ -21,6 +21,7 @@ export function GameConfigProvider({ children, config = {} }) {
     };
   });
   const [theme, setTheme] = useState(config.theme || 'dark');
+  const [isLightMode, setIsLightMode] = useState(false);
   const [soundsEnabled, setSoundsEnabled] = useState(true);
 
   // Initialize theme manager
@@ -29,6 +30,7 @@ export function GameConfigProvider({ children, config = {} }) {
     const currentTheme = themeManager.getCurrentTheme();
     if (currentTheme) {
       setTheme(currentTheme.name);
+      setIsLightMode(themeManager.getIsLightMode());
     }
   }, []);
 
@@ -38,10 +40,11 @@ export function GameConfigProvider({ children, config = {} }) {
     setSoundsEnabled(soundManager.enabled);
   }, []);
 
-  // Apply theme when it changes
+  // Apply theme when it changes and sync light mode state
   useEffect(() => {
     if (theme) {
       themeManager.applyTheme(theme);
+      setIsLightMode(themeManager.getIsLightMode());
     }
   }, [theme]);
 
@@ -75,12 +78,13 @@ export function GameConfigProvider({ children, config = {} }) {
     // Theme configuration
     theme,
     setTheme,
-    getIsLightMode: () => themeManager.getIsLightMode(),
+    isLightMode,
     applyTheme: (name, isLight = null) => {
       themeManager.applyTheme(name, isLight);
       const currentTheme = themeManager.getCurrentTheme();
       if (currentTheme) {
         setTheme(currentTheme.name);
+        setIsLightMode(themeManager.getIsLightMode());
       }
     },
     toggleTheme: () => {
@@ -88,6 +92,7 @@ export function GameConfigProvider({ children, config = {} }) {
       const currentTheme = themeManager.getCurrentTheme();
       if (currentTheme) {
         setTheme(currentTheme.name);
+        setIsLightMode(themeManager.getIsLightMode());
       }
     },
     getAvailableThemes: () => themeManager.getAvailableThemes(),
