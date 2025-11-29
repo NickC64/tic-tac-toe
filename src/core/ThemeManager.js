@@ -5,6 +5,12 @@
 import { DarkTheme, LightTheme } from './themes/index.js';
 import { ImportedTheme } from './themes/ImportedTheme.js';
 import { builtInThemeData } from './themes/builtInThemes.js';
+import {
+  saveThemePreference,
+  loadThemePreference,
+  loadImportedThemes,
+  saveImportedThemes,
+} from './storage.js';
 
 class ThemeManager {
   constructor() {
@@ -76,12 +82,9 @@ class ThemeManager {
       });
     }
     this.currentTheme = theme;
-    
-    // Store preference
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('theme', name);
-      localStorage.setItem('themeLightMode', this.isLightMode.toString());
-    }
+
+    // Store preference via centralized storage
+    saveThemePreference(name, this.isLightMode);
   }
 
   /**
@@ -184,12 +187,10 @@ class ThemeManager {
     const theme = new ImportedTheme(name, themeData);
     this.register(name, theme);
     
-    // Store imported themes in localStorage
-    if (typeof localStorage !== 'undefined') {
-      const importedThemes = JSON.parse(localStorage.getItem('importedThemes') || '{}');
-      importedThemes[name] = themeData;
-      localStorage.setItem('importedThemes', JSON.stringify(importedThemes));
-    }
+    // Store imported themes via centralized storage
+    const importedThemes = loadImportedThemes();
+    importedThemes[name] = themeData;
+    saveImportedThemes(importedThemes);
     
     return name;
   }
@@ -205,17 +206,15 @@ class ThemeManager {
     }
 
     this.themes.delete(name);
-    
-    // Remove from localStorage
-    if (typeof localStorage !== 'undefined') {
-      const importedThemes = JSON.parse(localStorage.getItem('importedThemes') || '{}');
-      delete importedThemes[name];
-      localStorage.setItem('importedThemes', JSON.stringify(importedThemes));
-      
-      // If it was the current theme, switch to default
-      if (this.currentTheme?.name === name) {
-        this.applyTheme(this.defaultTheme);
-      }
+
+    // Remove from centralized storage
+    const importedThemes = loadImportedThemes();
+    delete importedThemes[name];
+    saveImportedThemes(importedThemes);
+
+    // If it was the current theme, switch to default
+    if (this.currentTheme?.name === name) {
+      this.applyTheme(this.defaultTheme);
     }
   }
 
@@ -239,9 +238,7 @@ class ThemeManager {
    * Load imported themes from localStorage
    */
   loadImportedThemes() {
-    if (typeof localStorage === 'undefined') return;
-    
-    const importedThemes = JSON.parse(localStorage.getItem('importedThemes') || '{}');
+    const importedThemes = loadImportedThemes();
     Object.entries(importedThemes).forEach(([name, themeData]) => {
       try {
         this.importTheme(name, themeData);
@@ -258,15 +255,9 @@ class ThemeManager {
     // Load imported themes first
     this.loadImportedThemes();
     
-    const savedTheme = typeof localStorage !== 'undefined' 
-      ? localStorage.getItem('theme') 
-      : null;
-    const savedLightMode = typeof localStorage !== 'undefined'
-      ? localStorage.getItem('themeLightMode') === 'true'
-      : false;
-    
-    const themeName = savedTheme || this.defaultTheme;
-    this.applyTheme(themeName, savedLightMode);
+    const prefs = loadThemePreference(this.defaultTheme);
+    const themeName = prefs.theme || this.defaultTheme;
+    this.applyTheme(themeName, prefs.isLightMode);
   }
 }
 

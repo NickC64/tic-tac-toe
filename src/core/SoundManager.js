@@ -3,6 +3,7 @@
  * Handles sound effects for game events
  */
 import eventBus, { GameEvents } from './EventBus.js';
+import { loadSoundSettings, saveSoundEnabled, saveSoundVolume } from './storage.js';
 
 class SoundManager {
   constructor() {
@@ -76,9 +77,7 @@ class SoundManager {
    */
   setEnabled(enabled) {
     this.enabled = enabled;
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('soundsEnabled', enabled.toString());
-    }
+    saveSoundEnabled(enabled);
   }
 
   /**
@@ -87,27 +86,17 @@ class SoundManager {
    */
   setVolume(volume) {
     this.volume = Math.max(0, Math.min(1, volume));
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('soundsVolume', this.volume.toString());
-    }
+    saveSoundVolume(this.volume);
   }
 
   /**
    * Initialize from localStorage
    */
   initialize() {
-    if (typeof localStorage !== 'undefined') {
-      const savedEnabled = localStorage.getItem('soundsEnabled');
-      if (savedEnabled !== null) {
-        this.enabled = savedEnabled === 'true';
-      }
-      
-      const savedVolume = localStorage.getItem('soundsVolume');
-      if (savedVolume !== null) {
-        this.volume = parseFloat(savedVolume);
-      }
-    }
-    
+    const settings = loadSoundSettings();
+    this.enabled = settings.enabled;
+    this.volume = settings.volume;
+
     this.start();
   }
 

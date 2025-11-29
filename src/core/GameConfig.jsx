@@ -7,28 +7,14 @@ import pieceFactory from './PieceFactory.js';
 import themeManager from './ThemeManager.js';
 import soundManager from './SoundManager.js';
 import { loadThemeFile, exportThemeFile, createThemeTemplate } from './ThemeFileLoader.js';
+import { loadPieceImages, savePieceImages } from './storage.js';
 
 const GameConfigContext = createContext(null);
 
 export function GameConfigProvider({ children, config = {} }) {
-  // Load saved piece images from localStorage
-  const loadSavedPieceImages = () => {
-    if (typeof localStorage !== 'undefined') {
-      const savedImages = localStorage.getItem('pieceImages');
-      if (savedImages) {
-        try {
-          return JSON.parse(savedImages);
-        } catch (e) {
-          console.warn('Failed to parse saved piece images:', e);
-        }
-      }
-    }
-    return {};
-  };
-
   const [pieceType, setPieceType] = useState(config.pieceType || 'text');
   const [pieceConfig, setPieceConfig] = useState(() => {
-    const savedImages = loadSavedPieceImages();
+    const savedImages = loadPieceImages();
     return {
       ...config.pieceConfig,
       imageMap: savedImages
@@ -64,7 +50,18 @@ export function GameConfigProvider({ children, config = {} }) {
     pieceType,
     setPieceType,
     pieceConfig,
-    setPieceConfig,
+    setPieceConfig: (updater) => {
+      setPieceConfig(prevConfig => {
+        const nextConfig = typeof updater === 'function' ? updater(prevConfig) : updater;
+        // Keep piece images in sync with storage
+        if (nextConfig && nextConfig.imageMap) {
+          savePieceImages(nextConfig.imageMap);
+        } else {
+          savePieceImages({});
+        }
+        return nextConfig;
+      });
+    },
     getPieceComponent: (symbol, props = {}) => {
       const PieceComponent = pieceFactory.create(pieceType, props);
       // Pass imageMap to IconPiece when using icon type
