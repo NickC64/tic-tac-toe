@@ -2,7 +2,7 @@
  * Strategy Pattern for theme management
  * Allows switching between different theme implementations
  */
-import { DarkTheme, LightTheme } from './themes/index.js';
+import { DefaultTheme } from './themes/DefaultTheme.js';
 import { ImportedTheme } from './themes/ImportedTheme.js';
 import { builtInThemeData } from './themes/builtInThemes.js';
 import {
@@ -16,12 +16,12 @@ class ThemeManager {
   constructor() {
     this.themes = new Map();
     this.currentTheme = null;
-    this.defaultTheme = 'dark';
+    this.defaultTheme = 'default';
     this.isLightMode = false;
     
-    // Register default themes
-    this.register('dark', new DarkTheme());
-    this.register('light', new LightTheme());
+    // Register unified default theme
+    const defaultTheme = new DefaultTheme();
+    this.register('default', defaultTheme);
     
     // Register built-in example themes
     this.loadBuiltInThemes();
@@ -48,25 +48,31 @@ class ThemeManager {
 
   /**
    * Apply a theme by name
-   * @param {string} name - Theme name to apply
-   * @param {boolean} isLight - Whether to use light variant (for imported themes)
+   * @param {string} name - Theme name to apply (supports 'dark'/'light' for backward compatibility)
+   * @param {boolean} isLight - Whether to use light variant
    */
   applyTheme(name, isLight = null) {
-    const theme = this.themes.get(name);
+    // Handle backward compatibility: map 'dark'/'light' to 'default'
+    let actualName = name;
+    if (name === 'dark' || name === 'light') {
+      actualName = 'default';
+      if (isLight === null) {
+        isLight = name === 'light';
+      }
+    }
+
+    const theme = this.themes.get(actualName);
     if (!theme) {
-      console.warn(`Theme "${name}" not found, using default`);
+      console.warn(`Theme "${actualName}" not found, using default`);
       return this.applyTheme(this.defaultTheme, isLight);
     }
 
-    // Handle light mode for imported themes
-    if (theme instanceof ImportedTheme) {
+    // Handle variant switching for themes that support it (DefaultTheme and ImportedTheme)
+    if (theme instanceof ImportedTheme || theme instanceof DefaultTheme) {
       if (isLight !== null) {
         this.isLightMode = isLight;
       }
       theme.setVariant(this.isLightMode);
-    } else {
-      // For built-in themes, determine light mode from theme name
-      this.isLightMode = name === 'light';
     }
 
     // Remove current theme (this will clean up font properties)
@@ -83,8 +89,8 @@ class ThemeManager {
     }
     this.currentTheme = theme;
 
-    // Store preference via centralized storage
-    saveThemePreference(name, this.isLightMode);
+    // Store preference via centralized storage (use actual theme name)
+    saveThemePreference(actualName, this.isLightMode);
   }
 
   /**
@@ -93,6 +99,14 @@ class ThemeManager {
    */
   getCurrentTheme() {
     return this.currentTheme;
+  }
+
+  /**
+   * Get current light mode state
+   * @returns {boolean}
+   */
+  getIsLightMode() {
+    return this.isLightMode;
   }
 
   /**
@@ -117,7 +131,7 @@ class ThemeManager {
    * @returns {string[]}
    */
   getBuiltInThemes() {
-    return ['dark', 'light', 'purple', 'ocean', 'sunset'];
+    return ['default', 'purple', 'ocean', 'sunset'];
   }
 
   /**
@@ -138,15 +152,8 @@ class ThemeManager {
     const theme = this.themes.get(name);
     if (!theme) return name;
     
-    if (theme instanceof ImportedTheme) {
-      const config = theme.getConfig();
-      return config.displayName || name;
-    }
-    
-    // Built-in themes
-    if (name === 'dark') return 'Default (Dark)';
-    if (name === 'light') return 'Default (Light)';
-    return name;
+    const config = theme.getConfig();
+    return config.displayName || name;
   }
 
   /**
@@ -161,19 +168,19 @@ class ThemeManager {
   }
 
   /**
-   * Toggle between light and dark themes
+   * Toggle between light and dark variants
    */
   toggle() {
     const currentName = this.currentTheme?.name || this.defaultTheme;
     
-    // If current theme is an imported theme, toggle its variant
-    if (this.currentTheme instanceof ImportedTheme) {
+    // If current theme supports variants (DefaultTheme or ImportedTheme), toggle variant
+    if (this.currentTheme instanceof ImportedTheme || this.currentTheme instanceof DefaultTheme) {
       this.isLightMode = !this.isLightMode;
       this.applyTheme(currentName, this.isLightMode);
     } else {
-      // For built-in themes, switch between dark and light
-      const newTheme = currentName === 'light' ? 'dark' : 'light';
-      this.applyTheme(newTheme);
+      // Fallback: switch to default theme with opposite variant
+      this.isLightMode = !this.isLightMode;
+      this.applyTheme(this.defaultTheme, this.isLightMode);
     }
   }
 
@@ -235,6 +242,16 @@ class ThemeManager {
   }
 
   /**
+   * Check if a theme supports variants (has setVariant method)
+   * @param {string} name - Theme name
+   * @returns {boolean}
+   */
+  themeSupportsVariants(name) {
+    const theme = this.themes.get(name);
+    return theme instanceof ImportedTheme || theme instanceof DefaultTheme;
+  }
+
+  /**
    * Load imported themes from localStorage
    */
   loadImportedThemes() {
@@ -256,7 +273,17 @@ class ThemeManager {
     this.loadImportedThemes();
     
     const prefs = loadThemePreference(this.defaultTheme);
-    const themeName = prefs.theme || this.defaultTheme;
+    let themeName = prefs.theme || this.defaultTheme;
+    
+    // Handle backward compatibility: migrate 'dark'/'light' to 'default'
+    if (themeName === 'dark' || themeName === 'light') {
+      themeName = 'default';
+      // If we had 'light' saved, use light variant
+      if (prefs.theme === 'light' && prefs.isLightMode === undefined) {
+        prefs.isLightMode = true;
+      }
+    }
+    
     this.applyTheme(themeName, prefs.isLightMode);
   }
 }

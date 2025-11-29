@@ -4,12 +4,14 @@ import "../routes/navbar.scss";
 import { useGameConfig } from '../core/GameConfig.jsx';
 
 export default function NavBar() {
-    const { theme, toggleTheme } = useGameConfig();
-    const [isLightTheme, setIsLightTheme] = useState(theme === 'light');
+    const { theme, toggleTheme, getIsLightMode } = useGameConfig();
+    const [isLightTheme, setIsLightTheme] = useState(false);
 
     useEffect(() => {
-        setIsLightTheme(theme === 'light');
-    }, [theme]);
+        // Get current light mode state, with fallback for backward compatibility
+        const isLight = getIsLightMode ? getIsLightMode() : theme === 'light';
+        setIsLightTheme(isLight);
+    }, [theme, getIsLightMode]);
 
     const handleThemeToggle = () => {
         toggleTheme();

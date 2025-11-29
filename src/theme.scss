@@ -3,7 +3,7 @@
  *
  * This file intentionally does NOT hardcode any actual color or font values.
  * All CSS custom properties (e.g. --bg, --text, --font-body) are set by the
- * active theme implementation in JavaScript (DarkTheme, LightTheme,
+ * active theme implementation in JavaScript (DefaultTheme, ImportedTheme,
  * ImportedTheme, etc.).
  *
  * Keep this file for shared structural styles that reference those variables,

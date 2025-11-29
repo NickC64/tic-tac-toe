@@ -5,6 +5,20 @@ This directory contains the core architecture using design patterns to support e
 2. Custom themes
 3. Custom sound effects
 
+## Overall Architecture: MVVM Pattern
+
+The application follows the **Model-View-ViewModel (MVVM)** pattern:
+
+- **Model**: Pure business logic in `utils/gameLogic.js` - no side effects, easily testable
+- **View**: React components (`GameBoard`, `Player`, `Log`, etc.) - presentation only
+- **ViewModel**: Custom hooks (`hooks/useGameEngine.js`) and context (`GameConfig.jsx`) - manages state and exposes data/actions to views
+
+This separation provides:
+- **Testability**: ViewModel logic can be tested independently
+- **Reusability**: Game engine logic can be reused across different views
+- **Maintainability**: Clear separation of concerns
+- **Scalability**: Easy to add features like undo/redo, game history, etc.
+
 ## Design Patterns Used
 
 ### 1. Factory Pattern - Board Pieces (`PieceFactory.js`)
@@ -143,7 +157,91 @@ setSoundsEnabled(true);
 setSoundVolume(0.7);
 ```
 
+## MVVM Architecture
+
+### Game Engine ViewModel (`hooks/useGameEngine.js`)
+
+The game engine follows MVVM pattern with a custom hook as the ViewModel:
+
+```javascript
+import { useGameEngine } from '../hooks/useGameEngine.js';
+
+function Game() {
+  // ViewModel provides all state and actions
+  const {
+    // State
+    playerConfigs,
+    gameTurns,
+    currentMoveIndex,
+    isBotThinking,
+    showGameOver,
+    
+    // Derived state (computed)
+    gameBoard,
+    activePlayer,
+    winner,
+    winningCombination,
+    hasDraw,
+    isViewingPast,
+    isBoardDisabled,
+    
+    // Actions
+    handleSelectSquare,
+    handleRestart,
+    handlePlayerNameChange,
+    handleSelectMove,
+    handleReturnToCurrent,
+  } = useGameEngine();
+
+  // View just renders based on ViewModel state
+  return (
+    <GameBoard 
+      board={gameBoard}
+      onSelectSquare={handleSelectSquare}
+      // ...
+    />
+  );
+}
+```
+
+**Benefits:**
+- **Testable**: ViewModel logic can be unit tested independently
+- **Reusable**: Game engine can be used in different views (mobile, desktop, etc.)
+- **Maintainable**: Clear separation between game logic and UI
+- **Extensible**: Easy to add features like undo/redo, game history, replay
+
+### Model Layer (`utils/gameLogic.js`)
+
+Pure functions with no side effects - the business logic:
+
+```javascript
+// Pure functions - easy to test
+deriveGameBoard(gameTurns, moveIndex)
+deriveActivePlayer(gameTurns, moveIndex)
+deriveWinner(gameBoard, players)
+isValidMove(gameBoard, square)
+makeMove(gameTurns, square, player)
+isDraw(gameTurns, winner)
+```
+
 ## Usage in Components
+
+### Using Game Engine ViewModel
+
+```javascript
+import { useGameEngine } from '../hooks/useGameEngine.js';
+
+function GameView() {
+  const {
+    gameBoard,
+    activePlayer,
+    handleSelectSquare,
+    // ... other state and actions
+  } = useGameEngine();
+
+  return <GameBoard board={gameBoard} onSelectSquare={handleSelectSquare} />;
+}
+```
 
 ### Using GameConfig Hook
 

@@ -75,8 +75,9 @@ export function GameConfigProvider({ children, config = {} }) {
     // Theme configuration
     theme,
     setTheme,
-    applyTheme: (name) => {
-      themeManager.applyTheme(name);
+    getIsLightMode: () => themeManager.getIsLightMode(),
+    applyTheme: (name, isLight = null) => {
+      themeManager.applyTheme(name, isLight);
       const currentTheme = themeManager.getCurrentTheme();
       if (currentTheme) {
         setTheme(currentTheme.name);

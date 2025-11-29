@@ -35,7 +35,7 @@ export default function ThemeSettings() {
   const currentTheme = themeManager.getCurrentTheme();
   const isUsingBuiltIn = builtInThemes.includes(theme);
 
-  // Get display value for dropdown - show "default" for both dark and light
+  // Get display value for dropdown - map 'dark'/'light' to 'default' for backward compatibility
   const getThemeSelectValue = () => {
     if (theme === 'dark' || theme === 'light') {
       return 'default';
@@ -45,10 +45,10 @@ export default function ThemeSettings() {
 
   const handleThemeChange = (value) => {
     if (value === 'default') {
-      // If switching to default, use the current light/dark preference
-      // or default to dark
+      // If switching to default, preserve current variant preference
+      // ThemeManager will handle backward compatibility for 'dark'/'light'
       const currentIsLight = theme === 'light';
-      applyTheme(currentIsLight ? 'light' : 'dark');
+      applyTheme('default', currentIsLight);
     } else {
       applyTheme(value);
     }
@@ -105,7 +105,7 @@ export default function ThemeSettings() {
 
   // Filter built-in themes - separate default from others
   const otherBuiltInThemes = builtInThemes.filter(
-    (name) => name !== 'dark' && name !== 'light'
+    (name) => name !== 'default' && name !== 'dark' && name !== 'light'
   );
 
   // Font information for current theme
