@@ -4,6 +4,7 @@
  */
 import { DarkTheme, LightTheme } from './themes/index.js';
 import { ImportedTheme } from './themes/ImportedTheme.js';
+import { builtInThemeData } from './themes/builtInThemes.js';
 
 class ThemeManager {
   constructor() {
@@ -15,6 +16,19 @@ class ThemeManager {
     // Register default themes
     this.register('dark', new DarkTheme());
     this.register('light', new LightTheme());
+    
+    // Register built-in example themes
+    this.loadBuiltInThemes();
+  }
+
+  /**
+   * Load built-in example themes
+   */
+  loadBuiltInThemes() {
+    Object.entries(builtInThemeData).forEach(([key, themeData]) => {
+      const theme = new ImportedTheme(key, themeData);
+      this.register(key, theme);
+    });
   }
 
   /**
@@ -100,7 +114,7 @@ class ThemeManager {
    * @returns {string[]}
    */
   getBuiltInThemes() {
-    return ['dark', 'light'];
+    return ['dark', 'light', 'purple', 'ocean', 'sunset'];
   }
 
   /**
@@ -186,7 +200,7 @@ class ThemeManager {
    */
   removeTheme(name) {
     // Don't allow removing built-in themes
-    if (name === 'dark' || name === 'light') {
+    if (this.getBuiltInThemes().includes(name)) {
       throw new Error('Cannot remove built-in themes');
     }
 
@@ -206,13 +220,15 @@ class ThemeManager {
   }
 
   /**
-   * Get all imported themes
+   * Get all imported themes (excluding built-in themes)
    * @returns {Map<string, ImportedTheme>}
    */
   getImportedThemes() {
     const imported = new Map();
+    const builtInNames = this.getBuiltInThemes();
     this.themes.forEach((theme, name) => {
-      if (theme instanceof ImportedTheme) {
+      // Only include ImportedTheme instances that are NOT built-in themes
+      if (theme instanceof ImportedTheme && !builtInNames.includes(name)) {
         imported.set(name, theme);
       }
     });

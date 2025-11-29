@@ -154,26 +154,17 @@ export default function Settings() {
   const availablePieceTypes = getAvailablePieceTypes();
   
   // Separate built-in and imported themes
+  const builtInThemeNames = themeManager.getBuiltInThemes();
   const builtInThemes = availableThemes.filter(name => 
-    name === 'dark' || name === 'light'
+    builtInThemeNames.includes(name)
   );
   const importedThemeNames = availableThemes.filter(name => 
-    name !== 'dark' && name !== 'light'
+    !builtInThemeNames.includes(name)
   );
   
   // Get current theme info
   const currentTheme = themeManager.getCurrentTheme();
   const isUsingBuiltIn = builtInThemes.includes(theme);
-  
-  // Handle default theme selection - treat dark/light as unified "default"
-  const handleDefaultThemeSelect = () => {
-    // If currently on dark or light, keep the current one
-    // The toggle button will handle switching
-    if (theme === 'dark' || theme === 'light') {
-      // Already on default, do nothing
-      return;
-    }
-  };
   
   // Get display value for dropdown - show "default" for both dark and light
   const getThemeSelectValue = () => {
@@ -193,6 +184,9 @@ export default function Settings() {
       applyTheme(value);
     }
   };
+  
+  // Filter built-in themes - separate default from others
+  const otherBuiltInThemes = builtInThemes.filter(name => name !== 'dark' && name !== 'light');
 
   return (
     <main id="settings-main">
@@ -211,6 +205,11 @@ export default function Settings() {
           >
             <optgroup label="Built-in Themes">
               <option value="default">Default</option>
+              {otherBuiltInThemes.map((themeName) => (
+                <option key={themeName} value={themeName}>
+                  {themeManager.getThemeDisplayName(themeName)}
+                </option>
+              ))}
             </optgroup>
             {importedThemeNames.length > 0 && (
               <optgroup label="Imported Themes">
@@ -264,20 +263,33 @@ export default function Settings() {
         {/* Imported Themes List */}
         {importedThemes.length > 0 && (
           <div className="settings-field">
-            <label>Imported Themes</label>
+            <label>Your Imported Themes</label>
             <ul className="imported-themes-list">
-              {importedThemes.map((themeName) => (
-                <li key={themeName}>
-                  <span>{themeName}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTheme(themeName)}
-                    className="remove-button"
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
+              {importedThemes.map((themeName) => {
+                const themeObj = themeManager.getTheme(themeName);
+                const displayName = themeManager.getThemeDisplayName(themeName);
+                return (
+                  <li key={themeName}>
+                    <div className="theme-info">
+                      <span className="theme-name">{displayName}</span>
+                      {themeObj && (() => {
+                        const config = themeObj.getConfig();
+                        return config.description && (
+                          <span className="theme-description">{config.description}</span>
+                        );
+                      })()}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTheme(themeName)}
+                      className="remove-button"
+                      title={`Remove ${displayName}`}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
