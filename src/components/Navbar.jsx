@@ -1,15 +1,25 @@
 import { NavLink } from "react-router";
+import { useState } from "react";
 import "../routes/navbar.scss";
 import { useGameConfig } from '../core/GameConfig.jsx';
 
 export default function NavBar() {
     const { theme, toggleTheme, isLightMode } = useGameConfig();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
     // Use isLightMode from GameConfig, with fallback for backward compatibility
     const isLightTheme = isLightMode !== undefined ? isLightMode : theme === 'light';
 
     const handleThemeToggle = () => {
         toggleTheme();
+    };
+
+    const handleMobileMenuToggle = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const handleNavLinkClick = () => {
+        setIsMobileMenuOpen(false);
     };
 
     // Show light theme icon (sun) when in dark mode, dark theme icon (moon) when in light mode
@@ -27,8 +37,22 @@ export default function NavBar() {
 
     return (
         <nav className="navbar">
-            <h1 className="navbar-title"><a className="navbar-title-link" href="/">Tic Tac Toe</a></h1>
-            <ul className="navbar-links">
+            <div className="navbar-header">
+                <h1 className="navbar-title"><a className="navbar-title-link" href="/">Tic Tac Toe</a></h1>
+                <button 
+                    className="mobile-menu-toggle"
+                    onClick={handleMobileMenuToggle}
+                    aria-label="Toggle menu"
+                    aria-expanded={isMobileMenuOpen}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" className="menu-icon">
+                        <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            {/* Desktop menu */}
+            <ul className="navbar-links desktop-menu">
                 <li>
                     <NavLink to={"/"} end>Home</NavLink>
                 </li>
@@ -44,6 +68,29 @@ export default function NavBar() {
                     </button>
                 </li>
             </ul>
+
+            {/* Mobile slide-in menu */}
+            <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={handleMobileMenuToggle}>
+                <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
+                    <ul className="mobile-menu-links">
+                        <li>
+                            <NavLink to={"/"} end onClick={handleNavLinkClick}>Home</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={"/game"} onClick={handleNavLinkClick}>Game</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={"/settings"} onClick={handleNavLinkClick}>Settings</NavLink>
+                        </li>
+                        <li>
+                            <button id="theme-toggle-mobile" onClick={handleThemeToggle} aria-label="Toggle theme">
+                                {isLightTheme ? <DarkThemeIcon /> : <LightThemeIcon />}
+                                <span>Toggle Theme</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </nav>
     );
 }
