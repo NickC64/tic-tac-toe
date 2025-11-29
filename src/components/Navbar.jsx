@@ -1,13 +1,18 @@
 import { NavLink } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../routes/navbar.scss";
+import { useGameConfig } from '../core/GameConfig.jsx';
 
 export default function NavBar() {
-    const [isLightTheme, setIsLightTheme] = useState(false);
+    const { theme, toggleTheme } = useGameConfig();
+    const [isLightTheme, setIsLightTheme] = useState(theme === 'light');
+
+    useEffect(() => {
+        setIsLightTheme(theme === 'light');
+    }, [theme]);
 
     const handleThemeToggle = () => {
-        setIsLightTheme((prevTheme) => !prevTheme);
-        document.documentElement.classList.toggle("light-theme", !isLightTheme);
+        toggleTheme();
     };
 
     // Show light theme icon (sun) when in dark mode, dark theme icon (moon) when in light mode
@@ -32,6 +37,9 @@ export default function NavBar() {
                 </li>
                 <li>
                     <NavLink to={"/game"}>Game</NavLink>
+                </li>
+                <li>
+                    <NavLink to={"/settings"}>Settings</NavLink>
                 </li>
                 <li>
                     <button id="theme-toggle" onClick={handleThemeToggle} aria-label="Toggle theme">

@@ -1,5 +1,7 @@
+import { useGameConfig } from '../core/GameConfig.jsx';
 
 export default function GameBoard( {onSelectSquare, board, isViewingPast, isDisabled, winningCombination, hasDraw} ) {
+    const { getPieceComponent } = useGameConfig();
     // Calculate line coordinates for winning combination
     const getLineCoordinates = () => {
         if (!winningCombination || winningCombination.length !== 3) {
@@ -58,7 +60,7 @@ export default function GameBoard( {onSelectSquare, board, isViewingPast, isDisa
                                     style={{ cursor: (isViewingPast || isDisabled) ? 'default' : playerSymbol !== null ? 'default' : 'pointer' }}
                                     className={`${isWinner ? 'winning-square' : ''} ${hasDraw ? 'draw-shake' : ''}`}
                                 >
-                                    {playerSymbol}
+                                    {playerSymbol ? getPieceComponent(playerSymbol) : null}
                                 </button>
                             </li>
                         );
