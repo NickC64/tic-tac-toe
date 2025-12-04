@@ -38,7 +38,7 @@ export default function NavBar() {
     return (
         <nav className="navbar">
             <div className="navbar-header">
-                <h1 className="navbar-title"><a className="navbar-title-link" href="/">Tic Tac Toe</a></h1>
+                <h1 className="navbar-title"><NavLink className="navbar-title-link" to={"/"}>Tic Tac Toe</NavLink></h1>
                 <button 
                     className="mobile-menu-toggle"
                     onClick={handleMobileMenuToggle}
